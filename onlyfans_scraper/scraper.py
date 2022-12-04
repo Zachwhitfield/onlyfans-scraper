@@ -23,7 +23,7 @@ from .interaction import like
 from .utils import auth, config, download, profiles, prompts
 
 from revolution import Revolution
-from .utils.sleep import nap_or_sleep
+from .utils.nap import nap_or_sleep
 
 
 # silent = False
