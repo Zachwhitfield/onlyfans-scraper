@@ -21,7 +21,9 @@ from .api import init, highlights, me, messages, posts, profile, subscriptions
 from .db import operations
 from .interaction import like
 from .utils import auth, config, download, profiles, prompts
+
 from revolution import Revolution
+from .utils.nap import nap_or_sleep
 
 
 # silent = False
@@ -344,9 +346,9 @@ def silent_run():
 
     try:
         resp = me.scrape_user(headers)
-    except:
-        raise Exception("Invalid auth.json file")
-
+    except Exception as e:
+        print("Silent run failed with exception: ", e)
+        return
     subscribe_count = process_me(headers)
     parsed_subscriptions = get_models(headers, subscribe_count)
     usernames = get_usernames(parsed_subscriptions)
@@ -361,20 +363,16 @@ def silent_run():
 
 
 def daemon():
-    start_time = datetime.datetime.now()
-    last_run = start_time + timedelta(hours = 4)
+
     while True:
-        if datetime.datetime.now() - timedelta(hours = 2) > last_run:
-            if datetime.datetime.now() - timedelta(hours=7) < last_run:
-                print("Going to sleep at {} for a max of 2.5 hours.".format(datetime.datetime.now()))
-                sleep(choice([7200, 9000]))
-                print("starting at: {}".format(datetime.datetime.now()))
-                last_run = datetime.datetime.now()
-            print("Going to sleep at {} for a max of 2.5 hours.".format(datetime.datetime.now()))
-            sleep(choice([7200,9000]))
-            print("starting at: {}".format(datetime.datetime.now()))
-            last_run = datetime.datetime.now()
-        silent_run()
+        # Trying vs running allows the daemon to recover from errors and try again later.
+        try:
+            silent_run()
+        except Exception as e:
+            print("Daemon failed with exception: ", e)
+        finally:
+            nap_or_sleep()
+
 
 
 
