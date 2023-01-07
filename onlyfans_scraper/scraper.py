@@ -17,7 +17,7 @@ from random import randint, choice
 from time import sleep
 from datetime import datetime, timedelta
 
-from .api import init, highlights, me, messages, posts, profile, subscriptions
+from .api import init
 from .db import operations
 from .interaction import like
 from .utils import auth, config, download, profiles, prompts
