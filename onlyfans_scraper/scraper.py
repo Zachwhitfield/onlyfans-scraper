@@ -360,6 +360,7 @@ def silent_run():
                 headers, username, model_id, ignore_prompt=True)
         except Exception as e:
             print("Silent run failed with exception: ", e)
+            silent_run()
 
 
 def daemon():
